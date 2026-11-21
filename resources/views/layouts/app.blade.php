@@ -160,10 +160,11 @@
                 <a href="{{ route('staff.bookings.index') }}" class="nav-link {{ request()->routeIs('staff.bookings.*') ? 'active' : '' }}">Jadwal Service</a>
             @endif
 
+            <div class="menu-label">Sistem</div>
             @if (auth()->user()->hasRole('admin'))
-                <div class="menu-label">Sistem</div>
                 <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">User & Staff</a>
             @endif
+            <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About Us</a>
         </div>
 
         <div class="sidebar-footer">
