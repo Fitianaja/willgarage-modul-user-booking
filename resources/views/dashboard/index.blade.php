@@ -1,59 +1,55 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard - WillGarage')
+@section('title', 'Homepage - Will Garage')
 
 @section('content')
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <h4 class="mb-1">Selamat Datang, {{ $user->name }}!</h4>
-        <p class="text-muted mb-0">Anda login sebagai: <strong>{{ strtoupper(str_replace('_', ' ', $user->role)) }}</strong></p>
+<div style="background-color: #0B192C; color: #fff; border-radius: 16px; padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div>
+        <span style="background: rgba(255,101,0,0.2); color: #FF6500; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;">Overview Bengkel Hari Ini</span>
+        <h2 style="margin-top: 8px; font-size: 24px;">Welcome Back Again, {{ $user->name }}</h2>
+        <p style="color: #94A3B8; font-size: 13px; margin-top: 4px;">
+            @if ($user->hasRole('customer'))
+                Kelola kendaraan dan pantau jadwal servis kendaraan Anda secara real-time.
+            @else
+                Ada {{ $pendingBookings }} antrean service menunggu verifikasi & pengerjaan.
+            @endif
+        </p>
+    </div>
+    <div>
+        @if ($user->hasRole('customer'))
+            <a href="{{ route('customer.bookings.index') }}" class="btn-orange">+ Booking Service</a>
+        @else
+            <a href="{{ route('staff.bookings.index') }}" class="btn-orange">Kelola Jadwal Service</a>
+        @endif
     </div>
 </div>
 
 @if ($user->hasRole('customer'))
-    <div class="row g-3">
-        <div class="col-md-6">
-            <div class="card border-primary">
-                <div class="card-body">
-                    <h5>Kendaraan Saya</h5>
-                    <p class="display-6 fw-bold">{{ $myVehiclesCount }}</p>
-                    <a href="{{ route('customer.vehicles.index') }}" class="btn btn-primary btn-sm">Kelola Kendaraan</a>
-                </div>
-            </div>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;">
+        <div class="card-box">
+            <div style="font-size: 13px; color: #64748B;">Kendaraan Terdaftar</div>
+            <div style="font-size: 32px; font-weight: 800; margin: 8px 0;">{{ $myVehiclesCount }}</div>
+            <a href="{{ route('customer.vehicles.index') }}" class="btn-navy">Lihat Data Kendaraan</a>
         </div>
-        <div class="col-md-6">
-            <div class="card border-success">
-                <div class="card-body">
-                    <h5>Jadwal Servis Saya</h5>
-                    <p class="display-6 fw-bold">{{ $myBookingsCount }}</p>
-                    <a href="{{ route('customer.bookings.index') }}" class="btn btn-success btn-sm">Buat / Lihat Jadwal Servis</a>
-                </div>
-            </div>
+        <div class="card-box">
+            <div style="font-size: 13px; color: #64748B;">Total Jadwal Servis Saya</div>
+            <div style="font-size: 32px; font-weight: 800; margin: 8px 0;">{{ $myBookingsCount }}</div>
+            <a href="{{ route('customer.bookings.index') }}" class="btn-orange">Lihat Jadwal Service</a>
         </div>
     </div>
 @else
-    <div class="row g-3">
-        <div class="col-md-6">
-            <div class="card border-warning">
-                <div class="card-body">
-                    <h5>Booking Menunggu Verifikasi (Pending)</h5>
-                    <p class="display-6 fw-bold">{{ $pendingBookings }}</p>
-                    @if ($user->hasAnyRole(['admin', 'service_advisor']))
-                        <a href="{{ route('staff.bookings.index') }}" class="btn btn-warning btn-sm">Kelola & Verifikasi Jadwal Servis</a>
-                    @endif
-                </div>
-            </div>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;">
+        <div class="card-box">
+            <div style="font-size: 13px; color: #64748B;">Antrean Menunggu Verifikasi (Pending)</div>
+            <div style="font-size: 32px; font-weight: 800; margin: 8px 0; color: #FF6500;">{{ $pendingBookings }}</div>
+            <a href="{{ route('staff.bookings.index') }}" class="btn-orange">Buka Board Jadwal Service</a>
         </div>
-        <div class="col-md-6">
-            <div class="card border-info">
-                <div class="card-body">
-                    <h5>Total Semua Jadwal Servis</h5>
-                    <p class="display-6 fw-bold">{{ $totalBookings }}</p>
-                    @if ($user->hasRole('admin'))
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-dark btn-sm">Manajemen Akun & Role</a>
-                    @endif
-                </div>
-            </div>
+        <div class="card-box">
+            <div style="font-size: 13px; color: #64748B;">Total Semua Jadwal Servis</div>
+            <div style="font-size: 32px; font-weight: 800; margin: 8px 0;">{{ $totalBookings }}</div>
+            @if ($user->hasRole('admin'))
+                <a href="{{ route('admin.users.index') }}" class="btn-navy">Kelola User & Staff</a>
+            @endif
         </div>
     </div>
 @endif

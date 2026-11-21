@@ -1,72 +1,64 @@
 @extends('layouts.app')
 
-@section('title', 'Kendaraan Saya - WillGarage')
+@section('title', 'Data Kendaraan - Will Garage')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Data Kendaraan Saya</h4>
-    <a href="{{ route('dashboard') }}" class="btn btn-secondary btn-sm">Kembali ke Dashboard</a>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+    <div class="page-heading" style="margin-bottom: 0;">Data Kendaraan</div>
 </div>
 
-<div class="row g-4">
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">Tambah Kendaraan</div>
-            <div class="card-body">
-                <form action="{{ route('customer.vehicles.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="form-label">Nomor Polisi (Plat)</label>
-                        <input type="text" name="plate_number" placeholder="Contoh: D 1234 ABC" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Merek</label>
-                        <input type="text" name="brand" placeholder="Contoh: Honda / Toyota" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tipe / Model</label>
-                        <input type="text" name="model" placeholder="Contoh: Vario 160 / Avanza" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tahun (Opsional)</label>
-                        <input type="number" name="year" placeholder="2023" class="form-control">
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Simpan Kendaraan</button>
-                </form>
-            </div>
+<div class="card-box">
+    <h4 style="margin-bottom: 12px; color: #0B192C;">+ Tambah Kendaraan Baru</h4>
+    <form action="{{ route('customer.vehicles.store') }}" method="POST" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: end;">
+        @csrf
+        <div>
+            <label class="form-label">Nomor Plat</label>
+            <input type="text" name="plate_number" placeholder="Contoh: D 1234 ABC" class="form-control" required>
         </div>
-    </div>
+        <div>
+            <label class="form-label">Merek</label>
+            <input type="text" name="brand" placeholder="Contoh: Honda / Toyota" class="form-control" required>
+        </div>
+        <div>
+            <label class="form-label">Model / Tipe</label>
+            <input type="text" name="model" placeholder="Contoh: Vario 125 / Avanza" class="form-control" required>
+        </div>
+        <div>
+            <label class="form-label">Tahun</label>
+            <input type="number" name="year" placeholder="2023" class="form-control">
+        </div>
+        <div style="grid-column: span 4; text-align: right; margin-top: 6px;">
+            <button type="submit" class="btn-navy">+ Tambah Kendaraan</button>
+        </div>
+    </form>
+</div>
 
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">Daftar Kendaraan Terdaftar</div>
-            <div class="card-body p-0">
-                <table class="table table-striped mb-0">
-                    <thead>
-                        <tr>
-                            <th>Plat Nomor</th>
-                            <th>Merek</th>
-                            <th>Model</th>
-                            <th>Tahun</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($vehicles as $vehicle)
-                            <tr>
-                                <td class="fw-bold">{{ $vehicle->plate_number }}</td>
-                                <td>{{ $vehicle->brand }}</td>
-                                <td>{{ $vehicle->model }}</td>
-                                <td>{{ $vehicle->year ?? '-' }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-3">Belum ada kendaraan terdaftar.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="card-box" style="padding: 0; overflow: hidden;">
+    <table class="wg-table">
+        <thead>
+            <tr>
+                <th>Nomor Plat</th>
+                <th>Pemilik</th>
+                <th>Merk & Model</th>
+                <th>Tahun</th>
+                <th>No HP</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($vehicles as $vehicle)
+                <tr>
+                    <td style="font-weight: 700;">{{ $vehicle->plate_number }}</td>
+                    <td>{{ auth()->user()->name }}</td>
+                    <td>{{ $vehicle->brand }} {{ $vehicle->model }}</td>
+                    <td>{{ $vehicle->year ?? '-' }}</td>
+                    <td>{{ auth()->user()->phone_number ?? '-' }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #64748B; padding: 24px;">Belum ada kendaraan terdaftar.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection
